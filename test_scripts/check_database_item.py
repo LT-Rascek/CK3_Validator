@@ -84,7 +84,7 @@ class BuildItemDatabaseFromFolder:
     '''
     def action(self,file):
         item_list = []
-        stream = os.popen(f'dotnet-script .test_scripts/get_items_in_file.csx {file}')
+        stream = os.popen(f'dotnet-script ./CK3_Validator/test_scripts/get_items_in_file.csx {file}')
         output = stream.read()
         item_list = output.strip().split(' ')
         return item_list
