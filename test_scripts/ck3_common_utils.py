@@ -16,11 +16,13 @@ Desc:
   Finds a list of text files based on comparison of dir_name to item_type and does file_action
   (making a list of items to search over OR a dictionary of database instance counts)
 '''
-def search_over_mod_structure(root_dir,file_keyword,file_action_object,data_object,console_output):
-    #Why don't we add localization files? Because removal of other database items might void localization items
+def search_over_mod_structure(root_dir,file_keyword,file_action_object,data_object,console_output,check_localization=False):
+    #Why wouldn't we add localization files? Because removal of other database items might void localization items
     #So stuff that's used in only in localization (like 'clan_government_levies_max_possible') should be an
     #exclusion instead
     file_list = [y for x in os.walk(root_dir) for y in glob.glob(os.path.join(x[0], '*.txt'))]
+    if ( check_localization ):
+        file_list.extend([y for x in os.walk(root_dir) for y in glob.glob(os.path.join(x[0], '*.yml'))])
     for file,index in zip(file_list,range(len(file_list))):
         if ( console_output ): task_progress_meter(index,len(file_list))
         if ( re.search(file_keyword,file) ):
@@ -51,7 +53,11 @@ def remove_exceptions_list(item_list,exception_list):
 def console_input_parsing(exception_file_suffix):
     root_dir = './'+sys.argv[1]
     exceptions_dir = '.known_errors/'
-    item_type = sys.argv[2]
+    item_type = []
+    if (len(sys.argv)>2):
+        item_type = sys.argv[2]
+    else:
+        item_type = '.+'
     #Exceptions file handling
     exceptions_fname = ''
     if(len(sys.argv)>3):
