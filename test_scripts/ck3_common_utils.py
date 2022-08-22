@@ -63,7 +63,10 @@ def console_input_parsing(exception_file_suffix):
     if(len(sys.argv)>3):
         exceptions_fname = sys.argv[3]
     else:
-        exceptions_fname = exceptions_dir+item_type+exception_file_suffix+'.txt'
+        if ( r'.+' in item_type ):
+            exceptions_fname = exceptions_dir+item_type+exception_file_suffix+'.txt'
+        else:
+            exceptions_fname = exceptions_dir+'all'+exception_file_suffix+'.txt'
     return root_dir,item_type,exceptions_fname
 
 def common_exit(errors_found,item_type):

@@ -97,4 +97,4 @@ if __name__ == '__main__':
     
     errors_found = run_test(root_dir,item_type,exceptions_fname,True)
     
-    common_exit(errors_found,item_type)
+    common_exit(errors_found,'encoding')
