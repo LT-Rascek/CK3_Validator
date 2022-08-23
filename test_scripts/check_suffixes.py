@@ -1,15 +1,11 @@
 ﻿import sys
 import os
 import check_suffix_item as csi
+from ck3_common_utils import determine_root_dir
 
 if __name__ == '__main__':
-    # root_dir needs a trailing slash (i.e. /root/dir/)
-    root_dir = ''
-    if not os.path.isdir( './'+str(sys.argv[1])+'/' ):
-        print('No folder named '+str(sys.argv[1])+' exists; stopping execution')
-        sys.exit(1)
-    else:
-        root_dir = sys.argv[1]
+    root_dir = determine_root_dir(sys.argv[1])
+    console_outuput = False
     
     console_outuput = False
     if ( len(sys.argv)>2 ):

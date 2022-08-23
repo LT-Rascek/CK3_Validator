@@ -50,8 +50,23 @@ def load_exceptions_list(fname):
 def remove_exceptions_list(item_list,exception_list):
     return list(set(item_list)-set(exception_list))
 
+#argument_list should be sys.argv
+def determine_root_dir(root_dir_argument):
+    # root_dir needs a trailing slash (i.e. /root/dir/)
+    root_dir = ''
+    #General case of modname/modname/common structure
+    if os.path.isdir( './'+str(sys.argv[1])+'/' ):
+        root_dir = sys.argv[1]
+    #Case of modname/common
+    elif ( os.path.basename(os.getcwd())==sys.argv[1] ):
+        root_dir = './'
+    else:
+        print('No folder named '+str(sys.argv[1])+' exists; stopping execution')
+        sys.exit(1)
+    return root_dir
+
 def console_input_parsing(exception_file_suffix):
-    root_dir = './'+sys.argv[1]
+    root_dir = determine_root_dir(sys.argv[1])
     exceptions_dir = '.known_errors/'
     item_type = []
     if (len(sys.argv)>2):
@@ -63,10 +78,7 @@ def console_input_parsing(exception_file_suffix):
     if(len(sys.argv)>3):
         exceptions_fname = sys.argv[3]
     else:
-        if ( r'.+' in item_type ):
-            exceptions_fname = exceptions_dir+item_type+exception_file_suffix+'.txt'
-        else:
-            exceptions_fname = exceptions_dir+'all'+exception_file_suffix+'.txt'
+        exceptions_fname = exceptions_dir+item_type+exception_file_suffix+'.txt'
     return root_dir,item_type,exceptions_fname
 
 def common_exit(errors_found,item_type):
