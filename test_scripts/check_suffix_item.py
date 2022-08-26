@@ -33,6 +33,16 @@ i.e., ./MOD/, where
         |- localization
         |- music/
 
+OR
+
+./MOD/
+    |- common/
+    |- events/
+    |- gfx/
+    |- gui/
+    |- localization
+    |- music/
+
 is the expected sort of underlying structure. Will need some tweaks to run under other directory structures.
 
 Arg 1 is mod folder name
@@ -43,7 +53,7 @@ Arg 3 is the locations of your exceptions file (e.g., things you overwrite from 
 have references in your codebase). By default, it looks at:
 ./MOD/.test_scripts/_check_database_known_errors/<item_type>_suffix_exceptions.txt
 
-Example run command: "python3 .test_scripts/check_database_item.py MY_MOD_NAME scripted_effects"
+Example run command: "python3 .test_scripts/check_suffix_item.py MY_MOD_NAME scripted_effects"
 '''
 
 ''' License: BSD Zero Clause
@@ -70,22 +80,19 @@ Desc:
 
 exception_file_suffix = '_suffix_exceptions'
 
-#Wrapper Class for building a list of items for which to search the database
 class BuildItemDatabaseFromFolder:
     '''
     Arguments:
-      root_dir: Directory Root Dir
-      dir_name: Directory we're search
+      file: file name in question
+      returns: list of items in teh database folder
     Desc
       Pulls the list of items from the database folder
     '''
     def action(self,file):
         item_list = []
-        with open(file,'r',encoding='utf-8') as file_obj:
-            for line in file_obj:
-                match = re.match('([A-z_]*)[\s\t]*=[\s\t]*{',line)
-                if match:
-                    item_list.append(match[1])
+        stream = os.popen(f'dotnet-script ./CK3_Validator/test_scripts/get_items_in_file.csx {file}')
+        output = stream.read()
+        item_list = output.strip().split(' ')
         return item_list
 
 def check_suffixes(item_list,suffix,console_output):

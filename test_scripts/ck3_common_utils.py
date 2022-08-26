@@ -41,7 +41,10 @@ def search_over_mod_structure(root_dir,file_keyword,file_action_object,data_obje
         file_list.extend([y for x in os.walk(root_dir) for y in glob.glob(os.path.join(x[0], '*.yml'))])
     for file,index in zip(file_list,range(len(file_list))):
         if ( console_output ): task_progress_meter(index,len(file_list))
-        if ( re.search(file_keyword,file) and re.search(database_items,file) ):
+        file_path = file.split('/')
+        if ( re.search(file_keyword,file) and \
+             ( re.search(database_items,file_path[0]) or
+               re.search(database_items,file_path[1]) ) ):
             if ( isinstance(data_object,list) ):
                 data_object.extend(file_action_object.action(file))
             else:

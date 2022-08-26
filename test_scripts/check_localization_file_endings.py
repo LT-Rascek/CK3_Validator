@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import os
 
 from ck3_common_utils import search_over_mod_structure
@@ -44,7 +44,7 @@ Arg 2 is the locations of your exceptions file (e.g., things you overwrite from 
 have references in your codebase). By default, it looks at:
 ./MOD/.known_errors/<item_type>_database_exceptions.txt
 
-Example run command: "python3 ./CK3_Validator/test_scripts/check_encoding_item.py MY_MOD_NAME"
+Example run command: "python3 ./CK3_Validator/test_scripts/check_localization_file_endings.py MY_MOD_NAME"
 '''
 
 ''' License: BSD Zero Clause
@@ -57,27 +57,36 @@ AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 OF THIS SOFTWARE.
 '''
 
-exception_file_suffix = '_utf8_exceptions'
+exception_file_suffix = '_localization_ending_exceptions'
 
-class CheckFileEncoding:
-    BOM = '\ufeff'
+class CheckFileName:
     '''
-      dir_name: Directory we're search
+      file: the file we're cehcking
+      returns: None if properly formatted, file name if improperly formatted
     Desc
       Pulls the list of items from the database folder
-      
-      Borrowed from:
-        https://stackoverflow.com/questions/3269293/how-to-write-a-check-in-python-to-see-if-file-is-valid-utf-8
     '''
     def action(self,file):
-        with open(file,'r') as file_obj:
-            try:
-                text = file_obj.read()
-                if not text.startswith(self.BOM):
-                    return [file]
-            except UnicodeDecodeError:
-                return [file]
-        return [None]
+        fname = os.path.basename(file)
+        
+        english_ending = '_l_english.yml'
+        french_ending = '_l_french.yml'
+        german_ending = '_l_german.yml'
+        korean_ending = '_l_korean.yml'
+        russian_ending = '_l_russian.yml'
+        simp_chinese_ending = '_l_simp_chinese.yml'
+        spanish_ending = '_l_spanish.yml'
+        
+        if ( fname[-len(english_ending):] == english_ending or \
+             fname[-len(french_ending):] == french_ending or \
+             fname[-len(german_ending):] == german_ending or \
+             fname[-len(korean_ending):] == korean_ending or \
+             fname[-len(russian_ending):] == russian_ending or \
+             fname[-len(simp_chinese_ending):] == simp_chinese_ending or \
+             fname[-len(spanish_ending):] == spanish_ending ):
+            return [None]
+        else:
+            return [fname]
 
 def run_test(root_dir,item_type,exceptions_fname,console_output=False):
     errors_found = False
@@ -85,12 +94,13 @@ def run_test(root_dir,item_type,exceptions_fname,console_output=False):
     exception_list = []
     if ( os.path.isfile(exceptions_fname) ):
         exception_list = load_exceptions_list(exceptions_fname)
-    else:
-        print('Note: exceptions file not found')
+    else: print('Note: exceptions file not found')
     #Get the list of all items in the database requested
     if(console_output): print('Building Database')
-    file_encoding_check = CheckFileEncoding()
-    item_list = search_over_mod_structure(root_dir,item_type,file_encoding_check,[],console_output,check_localization=True)
+    file_ending_check = CheckFileName()
+    item_list = search_over_mod_structure(root_dir,item_type,file_ending_check,[],console_output,\
+                                          database=['localization'],\
+                                          check_localization=True)
     if(console_output): print('\n')
     #Remove None instances
     item_list = [x for x in item_list if x]
@@ -98,7 +108,7 @@ def run_test(root_dir,item_type,exceptions_fname,console_output=False):
     #Summary:
     if ( len(item_list)>0 ):
         errors_found = True
-        print('Improperly Encoded Files:\n'+str(item_list))
+        print('Improperly Ended Localization Files:\n'+str(item_list))
     return errors_found
 
 if __name__ == '__main__':
