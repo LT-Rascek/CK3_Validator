@@ -114,6 +114,6 @@ def run_test(root_dir,item_type,exceptions_fname,console_output=False):
 if __name__ == '__main__':
     root_dir,item_type,exceptions_fname = console_input_parsing(exception_file_suffix)
     
-    errors_found = run_test(root_dir,item_type,exceptions_fname,True)
+    errors_found = run_test(root_dir,item_type,exceptions_fname,console_output=False)
     
-    common_exit(errors_found,item_type)
+    common_exit(errors_found,'localization files ending')
