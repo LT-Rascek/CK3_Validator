@@ -81,7 +81,7 @@ def run_test(root_dir,item_type,exceptions_fname,console_output=False):
     #Get the list of all items in the database requested
     if(console_output): print('Building Database')
     file_encoding_check = CheckFileEncoding()
-    item_list = search_over_mod_structure(root_dir,item_type,file_encoding_check,[],console_output,True)
+    item_list = search_over_mod_structure(root_dir,item_type,file_encoding_check,[],console_output,check_localization=True)
     if(console_output): print('\n')
     #Remove None instances
     item_list = [x for x in item_list if x]
