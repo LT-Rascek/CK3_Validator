@@ -7,7 +7,6 @@ if __name__ == '__main__':
     root_dir = determine_root_dir(sys.argv[1])
     console_outuput = False
     
-    console_outuput = False
     if ( len(sys.argv)>2 ):
         console_outuput = True
     
@@ -18,7 +17,10 @@ if __name__ == '__main__':
         exceptions_fname = exceptions_dir+item_type+cei.exception_file_suffix+'.txt'
         test_error_found = cei.run_test(root_dir,item_type,exceptions_fname,console_outuput)
         if ( not test_error_found ):
-            print('No '+item_type+' issues found')
+            if ( item_type != '.+' ):
+                print('No '+item_type+' issues found')
+            else:
+                print('No all file issues found')
         errors_found |= test_error_found
     
     if ( errors_found ):

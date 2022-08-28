@@ -29,6 +29,8 @@ def search_over_mod_structure(root_dir,file_keyword,file_action_object,data_obje
                               check_localization=False):
     if ( len(database)== 0): RuntimeError("Did not provide a database to search in cke_common_utils.py:search_over_mod_structure(); failing")
     
+    print(root_dir)
+    
     database_items = '('
     for item in database:
         database_items += item
@@ -37,14 +39,15 @@ def search_over_mod_structure(root_dir,file_keyword,file_action_object,data_obje
     database_items += ')'
     
     file_list = [y for x in os.walk(root_dir) for y in glob.glob(os.path.join(x[0], '*.txt'))]
+    
+    #print(file_list)
+    
     if ( check_localization ):
         file_list.extend([y for x in os.walk(root_dir) for y in glob.glob(os.path.join(x[0], '*.yml'))])
     for file,index in zip(file_list,range(len(file_list))):
         if ( console_output ): task_progress_meter(index,len(file_list))
-        file_path = file.split('/')
         if ( re.search(file_keyword,file) and \
-             ( re.search(database_items,file_path[0]) or
-               re.search(database_items,file_path[1]) ) ):
+             re.search(database_items,os.path.dirname(file)) ):
             if ( isinstance(data_object,list) ):
                 data_object.extend(file_action_object.action(file))
             else:
