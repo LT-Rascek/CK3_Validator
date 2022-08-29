@@ -47,13 +47,24 @@ def search_over_mod_structure(root_dir,file_keyword,file_action_object,data_obje
     for file,index in zip(file_list,range(len(file_list))):
         if ( console_output ): task_progress_meter(index,len(file_list))
         if ( re.search(file_keyword,file) and \
-             re.search(database_items,os.path.dirname(file)) ):
+             compare_file_path_with_item(file,database_items) ):
             if ( isinstance(data_object,list) ):
                 data_object.extend(file_action_object.action(file))
             else:
                 data_object = file_action_object.action(file)
     if ( console_output ): task_progress_meter(len(file_list),len(file_list))
     return data_object
+
+def compare_file_path_with_item(file_path,re_pattern):
+    found_item = False
+    file_path = file_path.split('/')
+    file_path = file_path[:-1]
+    
+    for folder in file_path:
+        if ( re.search('^'+re_pattern+'$',folder) ):
+            found_item |= True
+    
+    return found_item
 
 def task_progress_meter(workDone,totalWork):
     progress_meter_len = 20
