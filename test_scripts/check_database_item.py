@@ -144,6 +144,7 @@ def run_test(root_dir,item_type,exceptions_fname,console_output=False):
     #Do a quick check for duplicates (some other undesirable behavior)
     if(console_output): print('Checking Duplicates')
     duplicates = [k for k, v in Counter(item_list).items() if v > 1]
+    duplicates = [item for item in duplicates if item] #Handle empty strings that crop up for some reason
     item_list = remove_exceptions_list(item_list,exception_list)
     if(console_output): print('\n')
     #Now we'll search everything **but** item_type folder for triggers
