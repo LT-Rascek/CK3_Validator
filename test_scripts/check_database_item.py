@@ -111,8 +111,9 @@ class CountInstancesOfItemsInFileList:
         with open(file,'r',encoding='utf-8') as file_obj:
             for line in file_obj:
                 if ( line[0] != '#' ):
-                    for match in re.finditer(self.regex_pattern,line):
-                        self.item_dict.update({match[0]:self.item_dict[match[0]]+1})
+                    if self.regex_pattern != '()':
+                        for match in re.finditer(self.regex_pattern,line):
+                            self.item_dict.update({match[0]:self.item_dict[match[0]]+1})
         return self.item_dict
 
 #Because we should always have a value of 1 (i.g., defined in the item_type database), decrement the instances by 1
